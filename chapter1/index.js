@@ -9,9 +9,9 @@ function statement(invoice, plays) {
         result += ` ${playFor(perf).name}: ${usd(amountFor(perf))} (${perf.audience} seats)\n`;
         totalAmount += amountFor(perf);
     }
-    let volumeCredits = totalVolumeCredits(invoice);
+
     result += `Amount owed is ${usd(totalAmount)}\n`;
-    result += `You earned ${volumeCredits} credits\n`;
+    result += `You earned ${totalVolumeCredits(invoice)} credits\n`;
     return result;
 }
 
