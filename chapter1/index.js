@@ -8,10 +8,7 @@ function statement(invoice, plays) {
                           { style: "currency", currency: "USD", 
                             minimumFractionDigits: 2}).format;
     for (let perf of invoice.performances) {
-        // 加入 volume credit
-        volumeCredits += Math.max(perf.audience - 30, 0);
-        // 每十名喜劇觀眾可獲得額外點數
-        if ("comedy" === playFor(perf).type) volumeCredits += Math.floor(perf.audience / 5);
+        volumeCredits += volumeCreditsFor(perf);
 
         // 印出這筆訂單
         result += ` ${playFor(perf).name}: ${format(amountFor(perf)/100)} (${perf.audience} seats)\n`;
@@ -46,6 +43,13 @@ function amountFor(aPerformance) {
 
 function playFor(aPerformance) {
     return plays[aPerformance.playID];
+}
+
+function volumeCreditsFor(perf) {
+    let volumeCredits = 0;
+    volumeCredits += Math.max(perf.audience - 30, 0);
+    if ("comedy" === playFor(perf).type) volumeCredits += Math.floor(perf.audience / 5);
+    return volumeCredits;
 }
 
 const fs = require("fs");
