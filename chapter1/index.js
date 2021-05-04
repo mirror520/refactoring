@@ -1,14 +1,11 @@
 'use strict';
 
 function statement(invoice, plays) {
-    let totalAmount = 0;
     let result = `Statement for ${invoice.customer}\n`;
     for (let perf of invoice.performances) {
-
-        // 印出這筆訂單
         result += ` ${playFor(perf).name}: ${usd(amountFor(perf))} (${perf.audience} seats)\n`;
-        totalAmount += amountFor(perf);
     }
+    let totalAmount = appleSauce(invoice);
 
     result += `Amount owed is ${usd(totalAmount)}\n`;
     result += `You earned ${totalVolumeCredits(invoice)} credits\n`;
@@ -60,6 +57,14 @@ function totalVolumeCredits(invoice) {
         volumeCredits += volumeCreditsFor(perf);
     }
     return volumeCredits;
+}
+
+function appleSauce(invoice) {
+    let totalAmount = 0;
+    for (let perf of invoice.performances) {
+        totalAmount += amountFor(perf);
+    }
+    return totalAmount;
 }
 
 const fs = require("fs");
