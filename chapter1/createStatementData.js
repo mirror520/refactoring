@@ -1,16 +1,12 @@
 'use strict';
 
-function statement(invoice, plays) {
-    return renderPlainText(createStatementData(invoice, plays));
-}
-
-function createStatementData(invoice, plays) {
-    const statementData = {};
-    statementData.customer = invoice.customer;
-    statementData.performances = invoice.performances.map(enrichPerformance);
-    statementData.totalAmount = totalAmount(statementData);
-    statementData.totalVolumeCredits = totalVolumeCredits(statementData);
-    return statementData;
+module.exports = function createStatementData(invoice, plays) {
+    const result = {};
+    result.customer = invoice.customer;
+    result.performances = invoice.performances.map(enrichPerformance);
+    result.totalAmount = totalAmount(result);
+    result.totalVolumeCredits = totalVolumeCredits(result);
+    return result;
 
     function enrichPerformance(aPerformance) {
         const result = Object.assign({}, aPerformance);
@@ -63,24 +59,3 @@ function createStatementData(invoice, plays) {
         return result;
     }
 }
-
-function renderPlainText(data) {
-    let result = `Statement for ${data.customer}\n`;
-    for (let perf of data.performances) {
-        result += ` ${perf.play.name}: ${usd(perf.amount)} (${perf.audience} seats)\n`;
-    }
-    result += `Amount owed is ${usd(data.totalAmount)}\n`;
-    result += `You earned ${data.totalVolumeCredits} credits\n`;
-    return result;
-
-    function usd(aNumber) {
-        return new Intl.NumberFormat("en-US", 
-                            { style: "currency", currency: "USD", 
-                              minimumFractionDigits: 2}).format(aNumber/100);
-    }
-}
-
-const fs = require("fs");
-let plays = JSON.parse(fs.readFileSync('plays.json'));
-let invoices = JSON.parse(fs.readFileSync('invoices.json'));
-console.log(statement(invoices[0], plays));
